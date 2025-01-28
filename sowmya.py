@@ -1,6 +1,13 @@
 import streamlit as st
 from PIL import Image
-import matplotlib.pyplot as plt
+
+# Try to import matplotlib, handle errors if not available
+try:
+    import matplotlib.pyplot as plt
+    matplotlib_available = True
+except ImportError:
+    matplotlib_available = False
+    st.error("Matplotlib is not installed. Please install it using 'pip install matplotlib' to view the graphs.")
 
 # App Title
 st.title("Forensic Scanner Identification Tool")
@@ -39,31 +46,32 @@ if uploaded_image is not None and forensic_image is not None:
     st.write(f"**Uploaded Image File Size:** {image1_size:.2f} KB, Resolution: {image1_resolution}")
     st.write(f"**Forensic Image File Size:** {image2_size:.2f} KB, Resolution: {image2_resolution}")
 
-    # Visualization: File Size and Resolution
-    st.write("### Graphical Analysis")
+    # Visualization: File Size and Resolution (only if matplotlib is available)
+    if matplotlib_available:
+        st.write("### Graphical Analysis")
 
-    # Plot file sizes
-    fig, ax = plt.subplots()
-    ax.bar(["Uploaded Image", "Forensic Image"], [image1_size, image2_size], color=["blue", "green"])
-    ax.set_title("File Size Comparison")
-    ax.set_ylabel("File Size (KB)")
-    st.pyplot(fig)
+        # Plot file sizes
+        fig, ax = plt.subplots()
+        ax.bar(["Uploaded Image", "Forensic Image"], [image1_size, image2_size], color=["blue", "green"])
+        ax.set_title("File Size Comparison")
+        ax.set_ylabel("File Size (KB)")
+        st.pyplot(fig)
 
-    # Plot resolution (width x height)
-    fig, ax = plt.subplots()
-    ax.bar(
-        ["Uploaded Image Width", "Forensic Image Width"],
-        [image1_resolution[0], image2_resolution[0]],
-        color="orange",
-    )
-    ax.bar(
-        ["Uploaded Image Height", "Forensic Image Height"],
-        [image1_resolution[1], image2_resolution[1]],
-        color="purple",
-    )
-    ax.set_title("Image Resolution Comparison")
-    ax.set_ylabel("Pixels")
-    st.pyplot(fig)
+        # Plot resolution (width x height)
+        fig, ax = plt.subplots()
+        ax.bar(
+            ["Uploaded Image Width", "Forensic Image Width"],
+            [image1_resolution[0], image2_resolution[0]],
+            color="orange",
+        )
+        ax.bar(
+            ["Uploaded Image Height", "Forensic Image Height"],
+            [image1_resolution[1], image2_resolution[1]],
+            color="purple",
+        )
+        ax.set_title("Image Resolution Comparison")
+        ax.set_ylabel("Pixels")
+        st.pyplot(fig)
 
 elif uploaded_image or forensic_image:
     st.warning("Please upload both images to display, analyze, and visualize them.")
