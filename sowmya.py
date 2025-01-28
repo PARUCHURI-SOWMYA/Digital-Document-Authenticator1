@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image, ImageOps, ImageFilter
+import os
 
 # App Title
 st.title("Forensic Scanner Identification Tool")
@@ -15,6 +16,19 @@ if original_image is not None:
     # Open the uploaded image
     image = Image.open(original_image)
     st.image(image, caption="Original Image", use_column_width=True)
+
+    # Display image details
+    image_info = {
+        "Image Type": original_image.type,
+        "Image Format": image.format,
+        "Image Size (in bytes)": len(original_image.getvalue()),
+        "Image Dimensions (width x height)": f"{image.width} x {image.height}",
+        "Image Mode": image.mode,
+    }
+
+    st.write("### Uploaded Image Details")
+    for key, value in image_info.items():
+        st.write(f"{key}: {value}")
 
     # Forensic Processing Options
     st.write("### Forensic Image Processing Options")
@@ -33,6 +47,16 @@ if original_image is not None:
     st.write("### Forensic Image Output")
     st.image(forensic_image, caption="Forensic Output Image", use_column_width=True)
 
+    # Display forensic image details
+    forensic_image_info = {
+        "Image Dimensions (width x height)": f"{forensic_image.width} x {forensic_image.height}",
+        "Image Mode": forensic_image.mode,
+    }
+    
+    st.write("### Forensic Image Details")
+    for key, value in forensic_image_info.items():
+        st.write(f"{key}: {value}")
+
     # Option to Download the Processed Image
     st.write("### Download Forensic Image")
     forensic_image.save("forensic_output.png")  # Save locally for download
@@ -48,4 +72,4 @@ else:
 
 # Footer
 st.markdown("---")
-st.write("Built with Streamlit for forensic scanner identification.")
+st.write("Built with Streamlit for forensic scanner identification.") 
