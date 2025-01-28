@@ -1,80 +1,50 @@
 import streamlit as st
-from PIL import Image
-
-# Try to import matplotlib, handle errors if not available
-try:
-    import matplotlib.pyplot as plt
-    matplotlib_available = True
-except ImportError:
-    matplotlib_available = False
-    st.error("Matplotlib is not installed. Please install it using 'pip install matplotlib' to view the graphs.")
+from PIL import Image, ImageOps, ImageFilter
 
 # App Title
 st.title("Forensic Scanner Identification Tool")
 
 # File Upload Section
-st.subheader("Upload Images")
-uploaded_image = st.file_uploader("Upload the image to be analyzed", type=["jpg", "jpeg", "png"])
-forensic_image = st.file_uploader("Upload the forensic reference image", type=["jpg", "jpeg", "png"])
+st.subheader("Upload Original Image")
+original_image = st.file_uploader("Upload the original image to process", type=["jpg", "jpeg", "png"])
 
-# Display Uploaded Images
-if uploaded_image is not None and forensic_image is not None:
-    st.write("### Uploaded Images")
+# Display and Process the Uploaded Image
+if original_image is not None:
+    st.write("### Original Image")
+    
+    # Open the uploaded image
+    image = Image.open(original_image)
+    st.image(image, caption="Original Image", use_column_width=True)
 
-    # Open the images
-    image1 = Image.open(uploaded_image)
-    image2 = Image.open(forensic_image)
+    # Forensic Processing Options
+    st.write("### Forensic Image Processing Options")
+    process_type = st.selectbox("Select the type of forensic transformation:", 
+                                ["Grayscale", "Edge Detection", "Invert Colors"])
 
-    # Display side by side
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image1, caption="Uploaded Image", use_column_width=True)
-    with col2:
-        st.image(image2, caption="Forensic Reference Image", use_column_width=True)
+    # Process the image based on the selected option
+    if process_type == "Grayscale":
+        forensic_image = ImageOps.grayscale(image)
+    elif process_type == "Edge Detection":
+        forensic_image = image.filter(ImageFilter.FIND_EDGES)
+    elif process_type == "Invert Colors":
+        forensic_image = ImageOps.invert(ImageOps.grayscale(image))
 
-    # Extract Metadata
-    st.write("### Metadata and Comparison")
+    # Display the forensic image
+    st.write("### Forensic Image Output")
+    st.image(forensic_image, caption="Forensic Output Image", use_column_width=True)
 
-    # Get file size (in KB)
-    image1_size = len(uploaded_image.getbuffer()) / 1024
-    image2_size = len(forensic_image.getbuffer()) / 1024
-
-    # Get image resolution
-    image1_resolution = image1.size  # (width, height)
-    image2_resolution = image2.size
-
-    st.write(f"**Uploaded Image File Size:** {image1_size:.2f} KB, Resolution: {image1_resolution}")
-    st.write(f"**Forensic Image File Size:** {image2_size:.2f} KB, Resolution: {image2_resolution}")
-
-    # Visualization: File Size and Resolution (only if matplotlib is available)
-    if matplotlib_available:
-        st.write("### Graphical Analysis")
-
-        # Plot file sizes
-        fig, ax = plt.subplots()
-        ax.bar(["Uploaded Image", "Forensic Image"], [image1_size, image2_size], color=["blue", "green"])
-        ax.set_title("File Size Comparison")
-        ax.set_ylabel("File Size (KB)")
-        st.pyplot(fig)
-
-        # Plot resolution (width x height)
-        fig, ax = plt.subplots()
-        ax.bar(
-            ["Uploaded Image Width", "Forensic Image Width"],
-            [image1_resolution[0], image2_resolution[0]],
-            color="orange",
+    # Option to Download the Processed Image
+    st.write("### Download Forensic Image")
+    forensic_image.save("forensic_output.png")  # Save locally for download
+    with open("forensic_output.png", "rb") as file:
+        btn = st.download_button(
+            label="Download Forensic Image",
+            data=file,
+            file_name="forensic_output.png",
+            mime="image/png",
         )
-        ax.bar(
-            ["Uploaded Image Height", "Forensic Image Height"],
-            [image1_resolution[1], image2_resolution[1]],
-            color="purple",
-        )
-        ax.set_title("Image Resolution Comparison")
-        ax.set_ylabel("Pixels")
-        st.pyplot(fig)
-
-elif uploaded_image or forensic_image:
-    st.warning("Please upload both images to display, analyze, and visualize them.")
+else:
+    st.warning("Please upload an original image to process.")
 
 # Footer
 st.markdown("---")
