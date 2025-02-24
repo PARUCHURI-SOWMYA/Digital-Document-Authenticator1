@@ -3,7 +3,7 @@ from PIL import Image, ImageOps, ImageFilter
 import os
 
 # App Title
-st.title("Forensic Scanner Identification Tool")
+st.title("Digital Document Authenticator")
 
 # File Upload Section
 st.subheader("Upload Original Image")
@@ -30,41 +30,41 @@ if original_image is not None:
     for key, value in image_info.items():
         st.write(f"{key}: {value}")
 
-    # Forensic Processing Options
-    st.write("### Forensic Image Processing Options")
-    process_type = st.selectbox("Select the type of forensic transformation:", 
+    # Document Authentication Processing Options
+    st.write("### Authentication Image Processing Options")
+    process_type = st.selectbox("Select the type of document authentication transformation:", 
                                 ["Grayscale", "Edge Detection", "Invert Colors"])
 
     # Process the image based on the selected option
     if process_type == "Grayscale":
-        forensic_image = ImageOps.grayscale(image)
+        auth_image = ImageOps.grayscale(image)
     elif process_type == "Edge Detection":
-        forensic_image = image.filter(ImageFilter.FIND_EDGES)
+        auth_image = image.filter(ImageFilter.FIND_EDGES)
     elif process_type == "Invert Colors":
-        forensic_image = ImageOps.invert(ImageOps.grayscale(image))
+        auth_image = ImageOps.invert(ImageOps.grayscale(image))
 
-    # Display the forensic image
-    st.write("### Forensic Image Output")
-    st.image(forensic_image, caption="Forensic Output Image", use_column_width=True)
+    # Display the authenticated image
+    st.write("### Authentication Image Output")
+    st.image(auth_image, caption="Authenticated Output Image", use_column_width=True)
 
-    # Display forensic image details
-    forensic_image_info = {
-        "Image Dimensions (width x height)": f"{forensic_image.width} x {forensic_image.height}",
-        "Image Mode": forensic_image.mode,
+    # Display authenticated image details
+    auth_image_info = {
+        "Image Dimensions (width x height)": f"{auth_image.width} x {auth_image.height}",
+        "Image Mode": auth_image.mode,
     }
     
-    st.write("### Forensic Image Details")
-    for key, value in forensic_image_info.items():
+    st.write("### Authentication Image Details")
+    for key, value in auth_image_info.items():
         st.write(f"{key}: {value}")
 
     # Option to Download the Processed Image
-    st.write("### Download Forensic Image")
-    forensic_image.save("forensic_output.png")  # Save locally for download
-    with open("forensic_output.png", "rb") as file:
+    st.write("### Download Authentication Image")
+    auth_image.save("auth_output.png")  # Save locally for download
+    with open("auth_output.png", "rb") as file:
         btn = st.download_button(
-            label="Download Forensic Image",
+            label="Download Authentication Image",
             data=file,
-            file_name="forensic_output.png",
+            file_name="auth_output.png",
             mime="image/png",
         )
 else:
@@ -72,4 +72,4 @@ else:
 
 # Footer
 st.markdown("---")
-st.write("Built with Streamlit for forensic scanner identification.") 
+st.write("Built with Streamlit for digital document authentication.")
