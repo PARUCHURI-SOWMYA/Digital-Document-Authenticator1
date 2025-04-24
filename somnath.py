@@ -3,7 +3,7 @@ from PIL import Image, ImageOps, ImageFilter
 import os
 
 # App Title
-st.title("Digital Document Authenticator")
+st.title("Digital Document Authentication and Verification Tool")
 
 # File Upload Section
 st.subheader("Upload Original Image")
