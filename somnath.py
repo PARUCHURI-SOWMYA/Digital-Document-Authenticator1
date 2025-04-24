@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image, ImageOps, ImageFilter
-import os
 
 # App Title
 st.title("Digital Document Authentication and Verification Tool")
@@ -14,8 +13,8 @@ if original_image is not None:
     st.write("### Original Image")
 
     # Open the uploaded image
-    image = Image.open(original_image)
-    st.image(image, caption="Original Image", use_column_width=True)
+    image = Image.open(original_image).convert("RGB")  # Ensure RGB format
+    st.image(image, caption="Original Image", use_container_width=True)
 
     # Display image details
     image_info = {
@@ -35,16 +34,16 @@ if original_image is not None:
 
     grayscale_img = ImageOps.grayscale(image)
     edge_img = image.filter(ImageFilter.FIND_EDGES)
-    inverted_img = ImageOps.invert(ImageOps.grayscale(image))
+    inverted_img = ImageOps.invert(grayscale_img)
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.image(grayscale_img, caption="Grayscale", use_column_width=True)
+        st.image(grayscale_img, caption="Grayscale", use_container_width=True)
     with col2:
-        st.image(edge_img, caption="Edge Detection", use_column_width=True)
+        st.image(edge_img, caption="Edge Detection", use_container_width=True)
     with col3:
-        st.image(inverted_img, caption="Inverted Colors", use_column_width=True)
+        st.image(inverted_img, caption="Inverted Colors", use_container_width=True)
 
     # Download Buttons
     st.write("### Download Processed Images")
