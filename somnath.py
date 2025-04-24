@@ -1,5 +1,9 @@
 import streamlit as st
 from PIL import Image, ImageOps, ImageFilter
+import warnings
+
+# Suppress deprecation warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 # App Title
 st.title("Digital Document Authentication and Verification Tool")
